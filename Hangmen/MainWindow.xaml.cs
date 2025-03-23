@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -28,6 +29,9 @@ namespace Hangmen
         private string selectedWord;
         private HashSet<char> wordLetters = new HashSet<char>();
         private int letters = 0;
+        private int guessedWords = 0;
+        private int maxFail = 10;
+        private int fail = 10;
         public MainWindow()
         {
             InitializeComponent();
@@ -56,6 +60,8 @@ namespace Hangmen
 
         private void New_Word(object sender,RoutedEventArgs e)
         {
+            this.fail = 10;
+            this.DisplayFailImage();
             this.checkEnd();
             this.wordGrid.Children.Clear();
             this.MakeLetters();
@@ -70,11 +76,12 @@ namespace Hangmen
                 TextBox tb = new TextBox
                 {
                     IsReadOnly = true,
-                    Text = selectedWord[i].ToString(),
-                    Foreground = Brushes.White,
+                    Name = (this.selectedWord[i] != ' ' ) ? Name = selectedWord[i].ToString() : "S" ,
                     Margin = new Thickness(5),
-                    FontSize = 30
+                    FontSize = 30,
+                    
                 };
+
                 if (selectedWord[i] == ' ')
                 {
                     this.letters++;
@@ -98,18 +105,62 @@ namespace Hangmen
                 letters++;
                 foreach(TextBox tb in this.wordGrid.Children)
                 {
-                    if (tb.Text.Equals(letter.ToString()))
+                    if (tb.Name.Equals(letter.ToString()))
                     {
-                        tb.Foreground = Brushes.Black;
+                        tb.Text = letter.ToString();
                     }
                 }
                 if(letters == wordLetters.Count())
                 {
                     MessageBox.Show("you gussed the word! - "+this.selectedWord,"Good Job",MessageBoxButton.OK,MessageBoxImage.None);
+                    guessedWords++;
+                    this.guessedWordsCounter.Text = "Guessed Words: "+guessedWords;
+                    foreach (Button b in this.lettersGrid.Children)
+                    {
+                        b.IsEnabled = false;
+                    }
+                    this.checkEnd();
+                }
+            }
+            else
+            {
+                this.fail--;
+                this.DisplayFailImage();
+                if(this.fail == 0)
+                {
+                    MessageBox.Show("you failed!", "Lose",MessageBoxButton.OK,MessageBoxImage.None);
+                    foreach (Button b in this.lettersGrid.Children)
+                    {
+                        b.IsEnabled = false;
+                    }
+                    this.Show_Solution(null,null);
                     this.checkEnd();
                 }
             }
          
+        }
+        private void Show_Solution(object sender, RoutedEventArgs e)
+        {
+            foreach (TextBox tb in this.wordGrid.Children)
+            {
+                tb.Text = tb.Name != "S" ? tb.Name.ToString() : "";
+            }
+            MessageBox.Show("Showed solution", "game ended", MessageBoxButton.OK, MessageBoxImage.None);
+            foreach (Button b in this.lettersGrid.Children)
+            {
+                b.IsEnabled = false;
+            }
+            this.checkEnd();
+
+        }
+        private void DisplayFailImage()
+        {
+            string picName = $"{maxFail-fail}.jpg";
+
+            var uri = new Uri("C://Users//Alex//Downloads//Hangmen//Hangmen//images//" + picName);
+            var bitmap = new BitmapImage(uri);
+
+            manImage.Source = bitmap;
         }
         private void checkEnd()
         {
@@ -118,6 +169,7 @@ namespace Hangmen
                 MessageBox.Show("no more words", "game ended", MessageBoxButton.OK, MessageBoxImage.None);
                 Close();
             }
+        
         }
     }
 }
