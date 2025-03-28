@@ -7,6 +7,26 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Image Name="manImage" Grid.Row="0" Stretch="Fill" Width="150" Height="150" Margin="-450,0,0,0" Source="pack://application:,,,/images/0.jpg"/>
+
+        <UniformGrid Name="lettersGrid" Rows="2" FlowDirection="LeftToRight" 
+                     Grid.Row="0" Margin="300,160,50,20"/>
+        <UniformGrid Name ="wordGrid" Rows="1" FlowDirection="LeftToRight" 
+                     Grid.Row="0" Margin="300,20,50,190"/>
+
+        <Grid Grid.Row="1">
+            <Button Name="newWordBtn" Height="60" Width="80" Content="New Word" FontSize="15" Margin="350,0,0,0" Click="New_Word"/>
+            <Button Height="60" Width="80" Content="Solution" FontSize="15" Margin="600,0,0,0" Click="Show_Solution" />
+
+            <TextBox Name="guessedWordsCounter" Height="60" Width="200" Text="Guessed Words: 0"   FontSize="20" VerticalContentAlignment="Center"
+                     Margin="-100,0,0,0" IsReadOnly="True"/>
+
+            <ComboBox Name="subjectCBox" Text="Subject" Width="120" Height="60" Margin="-550,0,0,0" FontSize="20"
+                      DisplayMemberPath="Subject" SelectedValuePath="ID" SelectionChanged="subjectCBox_SelectionChanged"/>
+        </Grid>
     </Grid>
 </Window>
