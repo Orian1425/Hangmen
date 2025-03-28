@@ -37,8 +37,7 @@ namespace Hangmen
             InitializeComponent();
 
             MakeLetters();
-            New_Word(null,null);
-            
+            this.subjectCBox.ItemsSource = DAL.DAL.GetDataView("Select * from SubjectTbl");
         }
         private void MakeLetters()
         {
@@ -60,97 +59,126 @@ namespace Hangmen
 
         private void New_Word(object sender,RoutedEventArgs e)
         {
-            this.fail = 10;
-            this.DisplayFailImage();
-            this.checkEnd();
-            this.wordGrid.Children.Clear();
-            this.MakeLetters();
-            this.wordLetters.Clear();
-            letters = 0;
-            int rndNum = this.rnd.Next(0,this.wordList.Count());
-            this.selectedWord = this.wordList[rndNum];
-            this.wordList.Remove(selectedWord);
-
-            for(int i = 0; i<this.selectedWord.Length; i++)
+            if(this.subjectCBox.SelectedIndex > -1)
             {
-                TextBox tb = new TextBox
+                if (this.wordDataTable.Rows.Count !=0)
                 {
-                    IsReadOnly = true,
-                    Name = (this.selectedWord[i] != ' ' ) ? Name = selectedWord[i].ToString() : "S" ,
-                    Margin = new Thickness(5),
-                    FontSize = 30,
-                    
-                };
+                    this.fail = 10;
+                    this.DisplayFailImage();
+                    this.checkEnd();
+                    this.wordGrid.Children.Clear();
+                    this.MakeLetters();
+                    letters = 0;
+                    int rndNum = this.rnd.Next(this.wordDataTable.Rows.Count);
+                    this.selectedWord = this.wordDataTable.Rows[rndNum]["Word"].ToString();
+                    this.wordDataTable.Rows.RemoveAt(rndNum);
 
-                if (selectedWord[i] == ' ')
-                {
-                    this.letters++;
-                    tb.BorderBrush = new SolidColorBrush(Colors.Transparent);
+                    for (int i = 0; i < this.selectedWord.Length; i++)
+                    {
+                        TextBox tb = new TextBox
+                        {
+                            IsReadOnly = true,
+                            Name = (this.selectedWord[i] != ' ') ? Name = selectedWord[i].ToString() : "S",
+                            Margin = new Thickness(5),
+                            FontSize = 30,
+
+                        };
+
+                        if (selectedWord[i] == ' ')
+                        {
+                            this.letters++;
+                            tb.BorderBrush = new SolidColorBrush(Colors.Transparent);
+                        }
+                        this.wordGrid.Children.Add(tb);
+                    }
                 }
-                this.wordLetters.Add(selectedWord[i]);
-                this.wordGrid.Children.Add(tb);
+                else
+                {
+                    MessageBox.Show("no more words", "error");
+                }
             }
+            else
+            {
+                MessageBox.Show("no subject selected", "error");
+            }
+            
             
             //
         }
         private void Btn_Click(object sender, RoutedEventArgs e)
         {
-            Button btn = (Button)sender;
-            btn.IsEnabled = false;
-
-            char letter = char.Parse(btn.Content.ToString());
-
-            if(selectedWord.Contains(letter))
+            if(this.wordGrid.Children.Count == 0)
             {
-                letters++;
-                foreach(TextBox tb in this.wordGrid.Children)
-                {
-                    if (tb.Name.Equals(letter.ToString()))
-                    {
-                        tb.Text = letter.ToString();
-                    }
-                }
-                if(letters == wordLetters.Count())
-                {
-                    MessageBox.Show("you gussed the word! - "+this.selectedWord,"Good Job",MessageBoxButton.OK,MessageBoxImage.None);
-                    guessedWords++;
-                    this.guessedWordsCounter.Text = "Guessed Words: "+guessedWords;
-                    foreach (Button b in this.lettersGrid.Children)
-                    {
-                        b.IsEnabled = false;
-                    }
-                    this.checkEnd();
-                }
+                MessageBox.Show("no word", "error");
             }
             else
             {
-                this.fail--;
-                this.DisplayFailImage();
-                if(this.fail == 0)
+                Button btn = (Button)sender;
+                btn.IsEnabled = false;
+
+                char letter = char.Parse(btn.Content.ToString());
+
+                if (selectedWord.Contains(letter))
                 {
-                    MessageBox.Show("you failed!", "Lose",MessageBoxButton.OK,MessageBoxImage.None);
-                    foreach (Button b in this.lettersGrid.Children)
+
+                    foreach (TextBox tb in this.wordGrid.Children)
                     {
-                        b.IsEnabled = false;
+                        if (tb.Name.Equals(letter.ToString()))
+                        {
+                            letters++;
+                            tb.Text = letter.ToString();
+                        }
                     }
-                    this.Show_Solution(null,null);
-                    this.checkEnd();
+                    if (letters == selectedWord.Length)
+                    {
+                        MessageBox.Show("you gussed the word! - " + this.selectedWord, "Good Job", MessageBoxButton.OK, MessageBoxImage.None);
+                        guessedWords++;
+                        this.guessedWordsCounter.Text = "Guessed Words: " + guessedWords;
+                        foreach (Button b in this.lettersGrid.Children)
+                        {
+                            b.IsEnabled = false;
+                        }
+                        this.checkEnd();
+                    }
+                }
+                else
+                {
+                    this.fail--;
+                    this.DisplayFailImage();
+                    if (this.fail == 0)
+                    {
+                        MessageBox.Show("you failed!", "Lose", MessageBoxButton.OK, MessageBoxImage.None);
+                        foreach (Button b in this.lettersGrid.Children)
+                        {
+                            b.IsEnabled = false;
+                        }
+                        this.Show_Solution(null, null);
+                    }
                 }
             }
+            
          
         }
         private void Show_Solution(object sender, RoutedEventArgs e)
         {
-            foreach (TextBox tb in this.wordGrid.Children)
+            if(this.wordGrid.Children.Count == 0)
             {
-                tb.Text = tb.Name != "S" ? tb.Name.ToString() : "";
+                MessageBox.Show("no word", "error");
             }
-            MessageBox.Show("Showed solution", "game ended", MessageBoxButton.OK, MessageBoxImage.None);
-            foreach (Button b in this.lettersGrid.Children)
+            else
             {
-                b.IsEnabled = false;
+                foreach (TextBox tb in this.wordGrid.Children)
+                {
+                    tb.Text = tb.Name != "S" ? tb.Name.ToString() : "";
+                }
+                MessageBox.Show("Showed solution", "game ended", MessageBoxButton.OK, MessageBoxImage.None);
+                foreach (Button b in this.lettersGrid.Children)
+                {
+                    b.IsEnabled = false;
+                }
+                this.checkEnd();
             }
-            this.checkEnd();
+            
 
         }
         private void DisplayFailImage()
@@ -164,12 +192,20 @@ namespace Hangmen
         }
         private void checkEnd()
         {
-            if (this.wordList.Count() == 0)
+            if (this.wordDataTable.Rows.Count == 0)
             {
                 MessageBox.Show("no more words", "game ended", MessageBoxButton.OK, MessageBoxImage.None);
-                Close();
+                this.newWordBtn.IsEnabled = false;
             }
         
+        }
+
+        private void subjectCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.newWordBtn.IsEnabled = true;
+            int subjId = (int)subjectCBox.SelectedValue;
+            string sqlStr = $"SELECT * FROM WordTbl WHERE Subject = {subjId}";
+            wordDataTable = DAL.DAL.GetDataTable(sqlStr);
         }
     }
 }
