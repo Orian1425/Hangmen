@@ -28,7 +28,6 @@ namespace Hangmen
         //private List<string> wordList = new List<string>();
         private DataTable wordDataTable = new DataTable();
         private string selectedWord;
-=======
         private int letters = 0;
         private int guessedWords = 0;
         private int maxFail = 10;
