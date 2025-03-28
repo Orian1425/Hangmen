@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
@@ -27,6 +28,7 @@ namespace Hangmen
         //private List<string> wordList = new List<string>();
         private DataTable wordDataTable = new DataTable();
         private string selectedWord;
+=======
         private int letters = 0;
         private int guessedWords = 0;
         private int maxFail = 10;
