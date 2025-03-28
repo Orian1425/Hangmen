@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data;
+using System.Data.OleDb;
+using DAL;
 
 namespace Hangmen
 {
@@ -22,12 +25,10 @@ namespace Hangmen
     public partial class MainWindow : Window
     {
         Random rnd = new Random();
-        private List<string> wordList = new List<string>()
-        {
-            "apple", "banana","grape fruit","watermelon","strawberry","mango","kiwi"
-        };
+        //private List<string> wordList = new List<string>();
+        private DataTable wordDataTable = new DataTable();
         private string selectedWord;
-        private HashSet<char> wordLetters = new HashSet<char>();
+=======
         private int letters = 0;
         private int guessedWords = 0;
         private int maxFail = 10;
