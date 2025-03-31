@@ -1,12 +1,17 @@
 ﻿using System.Data;
 using System.Data.OleDb;
+using System.Windows.Automation;
 namespace DAL
 {
     public class DAL
     {
+        private static string GetConnectionString()
+        {
+            return Hangmen.Properties.Settings.Default.myConnectionStrin;
+        }
         public static OleDbConnection GetConnection()
         {
-            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Alex\Downloads\Hangmen\Hangmen\db\db.accdb;Persist Security Info=True";
+            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Alex\source\repos\Hangmen\Hangmen\db\db.accdb;Persist Security Info=True";
             return new OleDbConnection(connectionString);
         }
         public static OleDbCommand GetCommand(OleDbConnection con, string sqlstr)

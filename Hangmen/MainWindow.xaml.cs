@@ -185,7 +185,7 @@ namespace Hangmen
         {
             string picName = $"{maxFail-fail}.jpg";
 
-            var uri = new Uri("C://Users//Alex//Downloads//Hangmen//Hangmen//images//" + picName);
+            var uri = new Uri("pack://application:,,,/images/" + picName);
             var bitmap = new BitmapImage(uri);
 
             manImage.Source = bitmap;

@@ -12,11 +12,12 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Image Name="manImage" Grid.Row="0" Stretch="Fill" Width="150" Height="150" Margin="-450,0,0,0" Source="pack://application:,,,/images/0.jpg"/>
-
-        <UniformGrid Name="lettersGrid" Rows="2" FlowDirection="LeftToRight" 
-                     Grid.Row="0" Margin="300,160,50,20"/>
-        <UniformGrid Name ="wordGrid" Rows="1" FlowDirection="LeftToRight" 
-                     Grid.Row="0" Margin="300,20,50,190"/>
+        <Grid Grid.Row="0" Width="500" HorizontalAlignment="Right">
+            <UniformGrid Name="lettersGrid" Rows="2" FlowDirection="LeftToRight" 
+                     Grid.Row="0"  Width="400" Height="100" Margin="0,120,0,0"/>
+            <UniformGrid Name ="wordGrid" Rows="1" FlowDirection="LeftToRight" Width="450" Height="60"
+                     Grid.Row="0" Margin="0,0,0,120"/>
+        </Grid>
 
         <Grid Grid.Row="1">
             <Button Name="newWordBtn" Height="60" Width="80" Content="New Word" FontSize="15" Margin="350,0,0,0" Click="New_Word"/>
